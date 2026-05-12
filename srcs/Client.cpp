@@ -32,6 +32,28 @@ std::string& Client::get_buffer() { return _buffer; }
 // COMMUNICATION
 void Client::reply(const std::string &msg)
 {
-	if (send(_fd, msg.c_str(), msg.length(), 0) < 0)
-		throw Server::SendError();
+	_write_buffer += msg;
+}
+
+bool Client::has_output() const
+{
+	return !_write_buffer.empty();
+}
+
+void Client::send_pending_output()
+{
+	if (_write_buffer.empty())
+		return;
+
+	int bytes_sent = send(_fd, _write_buffer.c_str(), _write_buffer.length(), 0);
+	if (bytes_sent > 0)
+	{
+		_write_buffer.erase(0, bytes_sent);
+	}
+	else if (bytes_sent == -1)
+	{
+		// If EAGAIN or EWOULDBLOCK, we just wait for the next POLLOUT
+		if (errno != EAGAIN && errno != EWOULDBLOCK)
+			throw Server::SendError();
+	}
 }

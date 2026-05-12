@@ -23,6 +23,7 @@ class Client
 		std::string _hostname;
 
 		std::string _buffer;
+		std::string _write_buffer;
 		ClientState     _state;
 
 	public:
@@ -48,6 +49,8 @@ class Client
 	
 	// communication
 	void reply(const std::string &msg);
+	bool has_output() const;
+	void send_pending_output();
 };
 
 #endif

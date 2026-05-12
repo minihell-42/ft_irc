@@ -96,33 +96,54 @@ void Server::run()
 
 	while (_running)
 	{
-		if (poll(_pfds.begin().base(), _pfds.size(), -1) < 0)
+		// Check which clients have data to send and enable POLLOUT
+		for (size_t i = 1; i < _pfds.size(); i++) {
+			if (_pfds[i].fd != -1) {
+				Client* client = _clients[_pfds[i].fd];
+				if (client && client->has_output())
+					_pfds[i].events |= POLLOUT;
+				else
+					_pfds[i].events &= ~POLLOUT;
+			}
+		}
+
+		if (poll(&_pfds[0], _pfds.size(), -1) < 0)
 		{
 			if (errno == EINTR)
 				continue;
 			throw PollFailedError();
 		}
 
-		for (std::vector<pollfd>::iterator it = _pfds.begin(); it != _pfds.end(); it++) {
+		for (size_t i = 0; i < _pfds.size(); i++) {
 			try{
-				if (it->revents & POLLIN)
+				if (_pfds[i].revents & POLLIN)
 				{
-					if (it->fd == _socket_fd)
-					{
+					if (_pfds[i].fd == _socket_fd)
 						client_connect();
-						break;
-					}
 					else
-						client_request(it->fd);
+						client_request(_pfds[i].fd);
 				}
-				else if (it->revents & (POLLHUP | POLLERR))
+				
+				if (_pfds[i].fd != -1 && (_pfds[i].revents & POLLOUT))
 				{
-					client_disconnect(it->fd);
-					break;
+					Client* client = _clients[_pfds[i].fd];
+					if (client)
+						client->send_pending_output();
 				}
+
+				if (_pfds[i].revents & (POLLHUP | POLLERR))
+					client_disconnect(_pfds[i].fd);
 			} catch (std::exception& e) {
 				std::cerr << "Error: " << e.what() << std::endl;
 			}
+		}
+
+		// Clean up disconnected clients from the poll vector safely
+		for (std::vector<pollfd>::iterator it = _pfds.begin(); it != _pfds.end(); ) {
+			if (it->fd == -1)
+				it = _pfds.erase(it);
+			else
+				++it;
 		}
 	}
 }
@@ -172,12 +193,11 @@ void Server::client_connect()
 
 void Server::client_disconnect(int fd)
 {
-	// remove from poll 
 	for (std::vector<pollfd>::iterator it = _pfds.begin(); it != _pfds.end(); ++it)
 	{
     	if (it->fd == fd)
     	{
-       	 	_pfds.erase(it);
+       	 	it->fd = -1;
         	break;
     	}
 	}
@@ -206,6 +226,14 @@ void Server::client_request(int fd)
 	client->append_buffer(buf);
 
 	std::string &buffer = client->get_buffer();
+
+	if (buffer.size() > 2048)
+	{
+		std::cout << "Client on fd " << fd << " exceeded buffer limit. Disconnecting..." << std::endl;
+		client_disconnect(fd);
+		return;
+	}
+
 	size_t pos;
 	while ((pos = buffer.find("\r\n")) != std::string::npos) {
 		std::string line = buffer.substr(0, pos);
@@ -249,6 +277,16 @@ void Server::parse_command(Client *client, const std::string &line)
 
 void Server::route_command(Client *client, const std::string &command, std::vector<std::string> &args)
 {
+	if (client->get_state() != REGISTERED)
+	{
+		if (command != "PASS" && command != "NICK" && command != "USER" && command != "QUIT" && command != "CAP")
+		{
+			std::string nick = client->get_nickname().empty() ? "*" : client->get_nickname();
+			client->reply(ERR_NOTREGISTERED(std::string("ft_irc"), nick));
+			return;
+		}
+	}
+
 	std::map<std::string, ACommand*>::iterator it = _commands.find(command);
 	if (it != _commands.end())
 		it->second->execute(client, args);
