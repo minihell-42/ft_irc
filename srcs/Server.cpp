@@ -1,6 +1,9 @@
 #include "../includes/Server.hpp"
 #include "../includes/cmds/Pass.hpp"
 #include "../includes/cmds/Nick.hpp"
+#include "../includes/cmds/User.hpp"
+#include "../includes/response.hpp"
+#include "../includes/cmds/User.hpp"
 
 bool Server::_running = true;
 
@@ -23,6 +26,7 @@ Server::Server(char **av) : _name("irc.miservidor.com"), _pass(av[2])
 
 	_commands["PASS"] = new Pass(*this);
 	_commands["NICK"] = new Nick(*this);
+	_commands["USER"] = new User(*this);
 }
 
 Server::~Server()
@@ -250,4 +254,28 @@ void Server::route_command(Client *client, const std::string &command, std::vect
 		it->second->execute(client, args);
 	else
 		std::cout << "Unknown command: " << command << std::endl;
+}
+
+// CLIENT REGISTRATION
+void Server::try_register(Client *client)
+{
+	if (client->get_state() == REGISTERED)
+		return;
+
+	if (client->get_state() != LOGIN)
+		return;
+
+	if (client->get_nickname().empty() || client->get_nickname() == "*")
+		return;
+
+	if (client->get_username().empty())
+		return;
+
+	client->set_state(REGISTERED);
+
+	client->reply(RPL_WELCOME(_name, client->get_nickname()));
+	client->reply(RPL_YOURHOST(_name, client->get_nickname(), std::string("1.0")));
+	client->reply(RPL_CREATED(_name, client->get_nickname(), _created_at));
+
+	std::cout << "Client on fd " << client->get_fd() << " is now fully registered as " << client->get_nickname() << "!" << std::endl;
 }

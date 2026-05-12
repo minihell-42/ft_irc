@@ -32,4 +32,6 @@ void Pass::execute(Client* client, std::vector<std::string>& args)
     
     std::cout << "PASS accepted for fd " << client->get_fd() << std::endl;
     client->set_state(LOGIN);
+    
+    _server.try_register(client);
 }

@@ -57,6 +57,7 @@ public:
   void client_connect();
   void client_disconnect(int fd);
   void client_request(int fd);
+  void try_register(Client *client);
 
   // getters and setters
   std::string get_password() const;

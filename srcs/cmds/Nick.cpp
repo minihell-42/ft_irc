@@ -30,4 +30,6 @@ void Nick::execute(Client* client, std::vector<std::string>& args)
     
     client->set_nickname(new_nick);
     std::cout << "Nick for fd " << client->get_fd() << " set to: " << new_nick << std::endl;
+    
+    _server.try_register(client);
 }
