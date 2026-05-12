@@ -235,9 +235,13 @@ void Server::client_request(int fd)
 	}
 
 	size_t pos;
-	while ((pos = buffer.find("\r\n")) != std::string::npos) {
+	while ((pos = buffer.find('\n')) != std::string::npos) {
 		std::string line = buffer.substr(0, pos);
-		buffer.erase(0, pos + 2);
+		buffer.erase(0, pos + 1);
+		
+		if (!line.empty() && line[line.length() - 1] == '\r')
+			line.erase(line.length() - 1);
+			
 		if (!line.empty())
 		{
 			std::cout << "Received: " << line << std::endl;
@@ -254,6 +258,9 @@ void Server::parse_command(Client *client, const std::string &line)
 
 	std::istringstream stream(line);
 	stream >> command;
+
+	if (command.empty())
+		return;
 
 	std::string arg;
 	while (stream >> arg)

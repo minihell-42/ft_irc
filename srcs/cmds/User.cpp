@@ -23,10 +23,6 @@ void User::execute(Client* client, std::vector<std::string>& args)
     
     std::string new_username = args[0];
     std::string realname = args[3];
-
-    if (!realname.empty() && realname[0] == ':') {
-        realname = realname.substr(1);
-    }
     
     client->set_username(new_username);
     client->set_realname(realname);
