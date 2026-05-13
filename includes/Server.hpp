@@ -72,6 +72,11 @@ public:
   void parse_command(Client *client, const std::string &line);
   void route_command(Client *client, const std::string &command, std::vector<std::string> &args);
 
+  // Channels
+  Channel* get_channel(const std::string &name) const;
+  Channel* create_channel(const std::string &name);
+  void remove_channel(const std::string &name);
+
   // EXCEPTIONS
   class IncorrectPort : public std::exception {
     const char *what() const throw() {

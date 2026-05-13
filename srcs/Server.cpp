@@ -6,6 +6,7 @@
 #include "../includes/cmds/Ping.hpp"
 #include "../includes/cmds/Privmsg.hpp"
 #include "../includes/cmds/Notice.hpp"
+#include "../includes/cmds/Join.hpp"
 #include "../includes/response.hpp"
 
 bool Server::_running = true;
@@ -30,6 +31,7 @@ Server::Server(char **av) : _name("irc.miservidor.com"), _pass(av[2])
 	_commands["PASS"] = new Pass(*this);
 	_commands["NICK"] = new Nick(*this);
 	_commands["USER"] = new User(*this);
+	_commands["JOIN"] = new Join(*this);
 	_commands["QUIT"] = new Quit(*this);
 	_commands["PING"] = new Ping(*this);
 	_commands["PRIVMSG"] = new Privmsg(*this);
@@ -185,6 +187,32 @@ void Server::signal_handler(int sig)
 {
 	(void)sig;
 	_running = false;
+}
+
+// CHANNEL MANAGEMENT
+Channel* Server::get_channel(const std::string &name) const
+{
+	std::map<std::string, Channel*>::const_iterator it = _channels.find(name);
+	if (it != _channels.end())
+		return it->second;
+	return NULL;
+}
+
+Channel* Server::create_channel(const std::string &name)
+{
+	Channel* ch = new Channel(name);
+	_channels[name] = ch;
+	return ch;
+}
+
+void Server::remove_channel(const std::string &name)
+{
+	std::map<std::string, Channel*>::iterator it = _channels.find(name);
+	if (it != _channels.end())
+	{
+		delete it->second;
+		_channels.erase(it);
+	}
 }
 
 // CLIENT EVENTS
