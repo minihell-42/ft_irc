@@ -22,10 +22,23 @@ void Privmsg::execute(Client* client, std::vector<std::string>& args)
 	// Determine if target is a channel (starts with # or &)
 	if (target[0] == '#' || target[0] == '&')
 	{
-		// TODO: Channel messaging implementation
-		std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
-		
-		client->reply(ERR_NOSUCHCHANNEL(std::string("ft_irc"), client_id, target));
+		Channel* chan = _server.get_channel(target);
+		if (!chan)
+		{
+			std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
+			client->reply(ERR_NOSUCHCHANNEL(std::string("ft_irc"), client_id, target));
+			return;
+		}
+		// Check membership
+		if (!chan->has_member(client))
+		{
+			std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
+			client->reply(ERR_CANNOTSENDTOCHAN(std::string("ft_irc"), client_id, target));
+			return;
+		}
+		// Broadcast to channel members except sender
+		std::string msg = ":" + client->get_prefix() + " PRIVMSG " + target + " :" + message + "\r\n";
+		chan->broadcast(msg, client);
 	}
 	else
 	{
