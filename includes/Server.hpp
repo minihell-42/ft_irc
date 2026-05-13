@@ -65,6 +65,7 @@ public:
 
   // Utils
   bool is_nickname_in_use(const std::string& nick) const;
+  Client* get_client_by_nickname(const std::string& nick) const;
   static void signal_handler(int sig);
 
   // Commands

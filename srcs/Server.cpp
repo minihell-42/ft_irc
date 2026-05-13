@@ -4,6 +4,8 @@
 #include "../includes/cmds/User.hpp"
 #include "../includes/cmds/Quit.hpp"
 #include "../includes/cmds/Ping.hpp"
+#include "../includes/cmds/Privmsg.hpp"
+#include "../includes/cmds/Notice.hpp"
 #include "../includes/response.hpp"
 
 bool Server::_running = true;
@@ -30,6 +32,8 @@ Server::Server(char **av) : _name("irc.miservidor.com"), _pass(av[2])
 	_commands["USER"] = new User(*this);
 	_commands["QUIT"] = new Quit(*this);
 	_commands["PING"] = new Ping(*this);
+	_commands["PRIVMSG"] = new Privmsg(*this);
+	_commands["NOTICE"] = new Notice(*this);
 }
 
 Server::~Server()
@@ -165,6 +169,16 @@ bool Server::is_nickname_in_use(const std::string& nick) const
 			return true;
 	}
 	return false;
+}
+
+Client* Server::get_client_by_nickname(const std::string& nick) const
+{
+	for (std::map<int, Client*>::const_iterator it = _clients.begin(); it != _clients.end(); ++it)
+	{
+		if (it->second->get_nickname() == nick)
+			return it->second;
+	}
+	return NULL;
 }
 
 void Server::signal_handler(int sig)
