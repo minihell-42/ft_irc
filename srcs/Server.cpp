@@ -2,9 +2,9 @@
 #include "../includes/cmds/Pass.hpp"
 #include "../includes/cmds/Nick.hpp"
 #include "../includes/cmds/User.hpp"
-#include "../includes/response.hpp"
-#include "../includes/cmds/User.hpp"
 #include "../includes/cmds/Quit.hpp"
+#include "../includes/cmds/Ping.hpp"
+#include "../includes/response.hpp"
 
 bool Server::_running = true;
 
@@ -29,6 +29,7 @@ Server::Server(char **av) : _name("irc.miservidor.com"), _pass(av[2])
 	_commands["NICK"] = new Nick(*this);
 	_commands["USER"] = new User(*this);
 	_commands["QUIT"] = new Quit(*this);
+	_commands["PING"] = new Ping(*this);
 }
 
 Server::~Server()
@@ -46,6 +47,11 @@ Server::~Server()
 std::string Server::get_password() const
 {
 	return _pass;
+}
+
+std::string Server::get_name() const
+{
+	return _name;
 }
 
 // SERVER RUN & INIT 
