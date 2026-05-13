@@ -18,20 +18,21 @@ This project is a custom implementation of an Internet Relay Chat (IRC) server i
   1. `PASS` (Server password verification)
   2. `NICK` (Unique nickname selection)
   3. `USER` (Username and realname definition)
-- **Connection Cleanup:** Implements the `QUIT` command to allow users to gracefully disconnect, ensuring proper memory cleanup and socket closure.
+- **Connection Management:** Implements the `QUIT` command for graceful disconnection and the `PING`/`PONG` commands to keep client connections alive.
 - **Unauthorized Command Protection:** Any attempt to execute operational commands (like `JOIN` or `PRIVMSG`) prior to completing the registration sequence is intercepted and rejected with an `ERR_NOTREGISTERED` response.
 - **Automatic Registration:** The server intelligently detects when a client has fulfilled all authentication criteria (regardless of the order they send it) and automatically upgrades their state to `REGISTERED`, firing off the standard IRC Welcome messages (`001`, `002`, `003`, `004`).
 
+### Messaging
+- **Direct Messaging (`PRIVMSG`):** Users can send private messages to other users by nickname. The server looks up the target client and routes the message appropriately.
+- **Automated Notices (`NOTICE`):** Fully supports the `NOTICE` command, behaving identically to `PRIVMSG` but strictly adhering to RFC 2812 by never sending automatic error replies (preventing infinite loops between bots).
+
 ## Next Steps
 
-1. **Private Messaging (`PRIVMSG` / `NOTICE`):**
-   - Implement the ability for users to send direct messages to one another by looking up clients via their nickname.
-
-2. **Channel Management:**
+1. **Channel Management:**
    - **`JOIN` & `PART`:** Allow users to create, enter, and leave channels.
    - **Broadcasting:** Implement the logic to broadcast messages to all users within a specific channel.
    - **`TOPIC`:** Allow users to view and change channel topics.
 
-3. **Channel Operators & Modes:**
+2. **Channel Operators & Modes:**
    - Implement channel operator privileges (`+o`) and mode management (`MODE` command).
    - Implement operator-only commands such as `KICK` and `INVITE`.
