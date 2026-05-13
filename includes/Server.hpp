@@ -61,6 +61,7 @@ public:
 
   // getters and setters
   std::string get_password() const;
+  std::string get_name() const;
 
   // Utils
   bool is_nickname_in_use(const std::string& nick) const;
