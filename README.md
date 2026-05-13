@@ -18,6 +18,7 @@ This project is a custom implementation of an Internet Relay Chat (IRC) server i
   1. `PASS` (Server password verification)
   2. `NICK` (Unique nickname selection)
   3. `USER` (Username and realname definition)
+- **Connection Cleanup:** Implements the `QUIT` command to allow users to gracefully disconnect, ensuring proper memory cleanup and socket closure.
 - **Unauthorized Command Protection:** Any attempt to execute operational commands (like `JOIN` or `PRIVMSG`) prior to completing the registration sequence is intercepted and rejected with an `ERR_NOTREGISTERED` response.
 - **Automatic Registration:** The server intelligently detects when a client has fulfilled all authentication criteria (regardless of the order they send it) and automatically upgrades their state to `REGISTERED`, firing off the standard IRC Welcome messages (`001`, `002`, `003`, `004`).
 
@@ -34,6 +35,3 @@ This project is a custom implementation of an Internet Relay Chat (IRC) server i
 3. **Channel Operators & Modes:**
    - Implement channel operator privileges (`+o`) and mode management (`MODE` command).
    - Implement operator-only commands such as `KICK` and `INVITE`.
-
-4. **Connection Cleanup (`QUIT`):**
-   - Enhance the disconnection logic to ensure that when a user quits or unexpectedly drops connection, they are gracefully removed from all channels and a `QUIT` message is broadcast to relevant users.

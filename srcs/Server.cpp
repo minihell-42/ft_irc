@@ -4,6 +4,7 @@
 #include "../includes/cmds/User.hpp"
 #include "../includes/response.hpp"
 #include "../includes/cmds/User.hpp"
+#include "../includes/cmds/Quit.hpp"
 
 bool Server::_running = true;
 
@@ -27,6 +28,7 @@ Server::Server(char **av) : _name("irc.miservidor.com"), _pass(av[2])
 	_commands["PASS"] = new Pass(*this);
 	_commands["NICK"] = new Nick(*this);
 	_commands["USER"] = new User(*this);
+	_commands["QUIT"] = new Quit(*this);
 }
 
 Server::~Server()
@@ -246,6 +248,12 @@ void Server::client_request(int fd)
 		{
 			std::cout << "Received: " << line << std::endl;
         	parse_command(client, line);
+			
+			if (client->get_state() == DISCONNECTED)
+			{
+				client_disconnect(fd);
+				return;
+			}
 		}
 	}
 }
