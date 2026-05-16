@@ -7,6 +7,8 @@
 #include "../includes/cmds/Privmsg.hpp"
 #include "../includes/cmds/Notice.hpp"
 #include "../includes/cmds/Join.hpp"
+#include "../includes/cmds/Part.hpp"
+#include "../includes/cmds/Topic.hpp"
 #include "../includes/response.hpp"
 
 bool Server::_running = true;
@@ -32,6 +34,8 @@ Server::Server(char **av) : _name("irc.miservidor.com"), _pass(av[2])
 	_commands["NICK"] = new Nick(*this);
 	_commands["USER"] = new User(*this);
 	_commands["JOIN"] = new Join(*this);
+	_commands["PART"] = new Part(*this);
+	_commands["TOPIC"] = new Topic(*this);
 	_commands["QUIT"] = new Quit(*this);
 	_commands["PING"] = new Ping(*this);
 	_commands["PRIVMSG"] = new Privmsg(*this);
