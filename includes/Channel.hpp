@@ -45,6 +45,7 @@ public:
 	bool is_invite_only() const;
 	void invite(const std::string &nick);
 	bool is_invited(const std::string &nick) const;
+	void remove_invite(const std::string &nick);
 
 	void set_key(const std::string &key);
 	std::string get_key() const;

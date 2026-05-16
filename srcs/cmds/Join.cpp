@@ -54,6 +54,9 @@ void Join::execute(Client* client, std::vector<std::string>& args)
     if (chan->member_count() == 1)
         chan->add_operator(client);
 
+    // Clear any outstanding invite for this nick
+    chan->remove_invite(client->get_nickname());
+
     // Broadcast join to other members
     std::string join_msg = MSG_JOIN(client->get_prefix(), chan_name);
     chan->broadcast(join_msg, client);

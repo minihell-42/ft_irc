@@ -87,6 +87,7 @@ void Channel::set_invite_only(bool v) { _invite_only = v; }
 bool Channel::is_invite_only() const { return _invite_only; }
 void Channel::invite(const std::string &nick) { _invites.insert(nick); }
 bool Channel::is_invited(const std::string &nick) const { return _invites.find(nick) != _invites.end(); }
+void Channel::remove_invite(const std::string &nick) { _invites.erase(nick); }
 
 void Channel::set_key(const std::string &key) { _key = key; }
 std::string Channel::get_key() const { return _key; }
