@@ -18,6 +18,7 @@ private:
 	bool _invite_only;
 	std::string _key;
 	int _limit; // 0 means unlimited
+	bool _topic_restricted;
 
 public:
 	Channel(const std::string &name);
@@ -50,6 +51,8 @@ public:
 
 	void set_limit(int limit);
 	int get_limit() const;
+	void set_topic_restricted(bool v);
+	bool is_topic_restricted() const;
 };
 
 #endif

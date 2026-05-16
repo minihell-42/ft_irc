@@ -4,6 +4,7 @@
 Channel::Channel(const std::string &name)
     : _name(name), _topic(""), _invite_only(false), _key("") , _limit(0)
 {
+    _topic_restricted = false;
 }
 
 Channel::~Channel()
@@ -92,3 +93,6 @@ std::string Channel::get_key() const { return _key; }
 
 void Channel::set_limit(int limit) { _limit = limit; }
 int Channel::get_limit() const { return _limit; }
+
+void Channel::set_topic_restricted(bool v) { _topic_restricted = v; }
+bool Channel::is_topic_restricted() const { return _topic_restricted; }
