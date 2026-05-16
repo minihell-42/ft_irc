@@ -45,6 +45,15 @@ void Topic::execute(Client* client, std::vector<std::string>& args)
 
     // Set topic (args[1] contains trailing topic due to parser)
     std::string new_topic = args[1];
+
+    // If channel has +t (topic restricted), only operators can set it
+    if (chan->is_topic_restricted() && !chan->is_operator(client))
+    {
+        std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
+        client->reply(ERR_CHANOPRIVSNEEDED(std::string("ft_irc"), client_id, chan_name));
+        return;
+    }
+
     chan->set_topic(new_topic);
 
     // Notify channel members of topic change
