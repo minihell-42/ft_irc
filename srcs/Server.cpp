@@ -10,6 +10,7 @@
 #include "../includes/cmds/Part.hpp"
 #include "../includes/cmds/Topic.hpp"
 #include "../includes/cmds/Mode.hpp"
+#include "../includes/cmds/Kick.hpp"
 #include "../includes/response.hpp"
 
 bool Server::_running = true;
@@ -38,6 +39,7 @@ Server::Server(char **av) : _name("irc.miservidor.com"), _pass(av[2])
 	_commands["PART"] = new Part(*this);
 	_commands["TOPIC"] = new Topic(*this);
 	_commands["MODE"] = new Mode(*this);
+	_commands["KICK"] = new Kick(*this);
 	_commands["QUIT"] = new Quit(*this);
 	_commands["PING"] = new Ping(*this);
 	_commands["PRIVMSG"] = new Privmsg(*this);
