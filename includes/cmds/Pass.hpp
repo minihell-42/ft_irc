@@ -2,7 +2,6 @@
 #define PASS_HPP
 
 #include "ACommand.hpp"
-#include <iostream>
 
 class Pass : public ACommand {
     public:
