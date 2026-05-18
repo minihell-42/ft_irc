@@ -17,6 +17,7 @@
 #include "Channel.hpp"
 #include "Client.hpp"
 #include "cmds/ACommand.hpp"
+#include <iostream>
 
 class Server {
   private:
