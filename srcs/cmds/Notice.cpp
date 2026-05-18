@@ -21,12 +21,12 @@ void Notice::execute(Client* client, std::vector<std::string>& args)
 	}
 	else
 	{
-		Client* target_client = _server.get_client_by_nickname(target);
-		if (!target_client)
+		Client* targetClient = _server.getClientByNickname(target);
+		if (!targetClient)
 			return;
 
 		// Format: :<sender_prefix> NOTICE <target> :<message>
-		std::string msg_to_send = ":" + client->get_prefix() + " NOTICE " + target + " :" + message + "\r\n";
-		target_client->reply(msg_to_send);
+		std::string msgToSend = ":" + client->getPrefix() + " NOTICE " + target + " :" + message + "\r\n";
+		targetClient->reply(msgToSend);
 	}
 }

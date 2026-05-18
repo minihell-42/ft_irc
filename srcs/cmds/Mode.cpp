@@ -12,8 +12,8 @@ void Mode::execute(Client* client, std::vector<std::string>& args)
 {
     if (args.size() < 2)
     {
-        std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
-        client->reply(ERR_NEEDMOREPARAMS(std::string("ft_irc"), client_id, "MODE"));
+        std::string clientId = client->getNickname().empty() ? "*" : client->getNickname();
+        client->reply(ERR_NEEDMOREPARAMS(std::string("ft_irc"), clientId, "MODE"));
         return;
     }
 
@@ -23,30 +23,30 @@ void Mode::execute(Client* client, std::vector<std::string>& args)
     // We only handle channel modes (targets starting with # or &)
     if (target.empty() || (target[0] != '#' && target[0] != '&'))
     {
-        std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
-        client->reply(ERR_UNKNOWNMODE(std::string("ft_irc"), client_id, modes, target));
+        std::string clientId = client->getNickname().empty() ? "*" : client->getNickname();
+        client->reply(ERR_UNKNOWNMODE(std::string("ft_irc"), clientId, modes, target));
         return;
     }
 
-    Channel* chan = _server.get_channel(target);
+    Channel* chan = _server.getChannel(target);
     if (!chan)
     {
-        std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
-        client->reply(ERR_NOSUCHCHANNEL(std::string("ft_irc"), client_id, target));
+        std::string clientId = client->getNickname().empty() ? "*" : client->getNickname();
+        client->reply(ERR_NOSUCHCHANNEL(std::string("ft_irc"), clientId, target));
         return;
     }
 
     // Only channel operators can change modes
     if (!chan->isOperator(client))
     {
-        std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
-        client->reply(ERR_CHANOPRIVSNEEDED(std::string("ft_irc"), client_id, target));
+        std::string clientId = client->getNickname().empty() ? "*" : client->getNickname();
+        client->reply(ERR_CHANOPRIVSNEEDED(std::string("ft_irc"), clientId, target));
         return;
     }
 
     // Process mode string (e.g., +itk, -o)
     bool add = true;
-    size_t param_index = 2; // args after channel and modes
+    size_t paramIndex = 2; // args after channel and modes
     for (size_t i = 0; i < modes.size(); ++i)
     {
         char c = modes[i];
@@ -64,13 +64,13 @@ void Mode::execute(Client* client, std::vector<std::string>& args)
             case 'k':
                 if (add)
                 {
-                    if (param_index >= args.size())
+                    if (paramIndex >= args.size())
                     {
-                        std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
-                        client->reply(ERR_NEEDMOREPARAMS(std::string("ft_irc"), client_id, "MODE"));
+                        std::string clientId = client->getNickname().empty() ? "*" : client->getNickname();
+                        client->reply(ERR_NEEDMOREPARAMS(std::string("ft_irc"), clientId, "MODE"));
                         return;
                     }
-                    chan->setKey(args[param_index++]);
+                    chan->setKey(args[paramIndex++]);
                 }
                 else
                 {
@@ -80,13 +80,13 @@ void Mode::execute(Client* client, std::vector<std::string>& args)
             case 'l':
                 if (add)
                 {
-                    if (param_index >= args.size())
+                    if (paramIndex >= args.size())
                     {
-                        std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
-                        client->reply(ERR_NEEDMOREPARAMS(std::string("ft_irc"), client_id, "MODE"));
+                        std::string clientId = client->getNickname().empty() ? "*" : client->getNickname();
+                        client->reply(ERR_NEEDMOREPARAMS(std::string("ft_irc"), clientId, "MODE"));
                         return;
                     }
-                    int limit = std::atoi(args[param_index++].c_str());
+                    int limit = std::atoi(args[paramIndex++].c_str());
                     chan->setLimit(limit);
                 }
                 else
@@ -96,31 +96,31 @@ void Mode::execute(Client* client, std::vector<std::string>& args)
                 break;
             case 'o':
                 // operator mode requires a nickname parameter
-                if (param_index >= args.size())
+                if (paramIndex >= args.size())
                 {
-                    std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
-                    client->reply(ERR_NEEDMOREPARAMS(std::string("ft_irc"), client_id, "MODE"));
+                    std::string clientId = client->getNickname().empty() ? "*" : client->getNickname();
+                    client->reply(ERR_NEEDMOREPARAMS(std::string("ft_irc"), clientId, "MODE"));
                     return;
                 }
                 {
-                    std::string nick = args[param_index++];
-                    Client* target_client = _server.get_client_by_nickname(nick);
-                    if (!target_client)
+                    std::string nick = args[paramIndex++];
+                    Client* targetClient = _server.getClientByNickname(nick);
+                    if (!targetClient)
                     {
-                        std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
-                        client->reply(ERR_NOSUCHNICK(std::string("ft_irc"), client_id, nick));
+                        std::string clientId = client->getNickname().empty() ? "*" : client->getNickname();
+                        client->reply(ERR_NOSUCHNICK(std::string("ft_irc"), clientId, nick));
                         return;
                     }
                     if (add)
-                        chan->addOperator(target_client);
+                        chan->addOperator(targetClient);
                     else
-                        chan->removeOperator(target_client);
+                        chan->removeOperator(targetClient);
                 }
                 break;
             default:
                 {
-                    std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
-                    client->reply(ERR_UNKNOWNMODE(std::string("ft_irc"), client_id, std::string(1, c), target));
+                    std::string clientId = client->getNickname().empty() ? "*" : client->getNickname();
+                    client->reply(ERR_UNKNOWNMODE(std::string("ft_irc"), clientId, std::string(1, c), target));
                     return;
                 }
         }
@@ -128,10 +128,10 @@ void Mode::execute(Client* client, std::vector<std::string>& args)
 
     // Announce mode change to channel members
     // Reconstruct mode change string for reply
-    std::string mode_msg = ":" + client->get_prefix() + " MODE " + target + " " + modes;
+    std::string modeMsg = ":" + client->getPrefix() + " MODE " + target + " " + modes;
     // Append parameters if any (simple approach: append remaining args from index 2)
-    for (size_t i = 2; i < param_index && i < args.size(); ++i)
-        mode_msg += std::string(" ") + args[i];
-    mode_msg += "\r\n";
-    chan->broadcast(mode_msg, NULL);
+    for (size_t i = 2; i < paramIndex && i < args.size(); ++i)
+        modeMsg += std::string(" ") + args[i];
+    modeMsg += "\r\n";
+    chan->broadcast(modeMsg, NULL);
 }

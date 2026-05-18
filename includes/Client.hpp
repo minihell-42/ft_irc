@@ -12,45 +12,46 @@ enum ClientState
     DISCONNECTED
 };
 
-class Client
-{
+class Client {
 	private:
 		std::string _nickname;
 		std::string _username;
 		std::string _realname;
 
-		int _fd;
+		int 				_fd;
 		std::string _hostname;
 
 		std::string _buffer;
-		std::string _write_buffer;
-		ClientState     _state;
+		std::string _writeBuffer;
+		ClientState _state;
 
 	public:
 		Client(int fd, const std::string &hostname);
 		~Client();
 
-	// getters
-	int 		get_fd() const;
-	std::string get_nickname() const;
-	std::string get_username() const;
-	std::string get_realname() const;
-	std::string get_hostname() const;
-	ClientState get_state() const;
-	std::string get_prefix() const;
-	// setters
-	void set_nickname(const std::string &nickname);
-	void set_username(const std::string &nickname);
-	void set_realname(const std::string &nickname);
-	void set_state(ClientState state);
-	//buffer methods
-	void append_buffer(const std::string &data);
-	std::string &get_buffer();
-	
-	// communication
-	void reply(const std::string &msg);
-	bool has_output() const;
-	void send_pending_output();
+		// getters
+		std::string getNickname() const;
+		std::string getUsername() const;
+		std::string getRealname() const;
+		std::string getHostname() const;
+		std::string getPrefix() const;
+		std::string &getBuffer();
+		ClientState getState() const;
+		int 				getFd() const;
+
+		// setters
+		void setNickname(const std::string &nickname);
+		void setUsername(const std::string &nickname);
+		void setRealname(const std::string &nickname);
+		void setState(ClientState state);
+
+		//buffer methods
+		void appendBuffer(const std::string &data);
+		
+		// communication
+		bool hasOutput() const;
+		void sendPendingOutput();
+		void reply(const std::string &msg);
 };
 
 #endif

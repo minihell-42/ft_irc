@@ -4,7 +4,7 @@
 #include "ACommand.hpp"
 
 class Invite : public ACommand {
-public:
+  public:
     Invite(Server& server);
     ~Invite();
 

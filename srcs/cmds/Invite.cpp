@@ -13,50 +13,50 @@ void Invite::execute(Client* client, std::vector<std::string>& args)
     // INVITE <nick> <channel>
     if (args.size() < 2)
     {
-        std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
-        client->reply(ERR_NEEDMOREPARAMS(std::string("ft_irc"), client_id, "INVITE"));
+        std::string clientId = client->getNickname().empty() ? "*" : client->getNickname();
+        client->reply(ERR_NEEDMOREPARAMS(std::string("ft_irc"), clientId, "INVITE"));
         return;
     }
 
-    std::string target_nick = args[0];
-    std::string chan_name = args[1];
+    std::string targetNick = args[0];
+    std::string chanName = args[1];
 
-    Channel* chan = _server.get_channel(chan_name);
+    Channel* chan = _server.getChannel(chanName);
     if (!chan)
     {
-        std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
-        client->reply(ERR_NOSUCHCHANNEL(std::string("ft_irc"), client_id, chan_name));
+        std::string clientId = client->getNickname().empty() ? "*" : client->getNickname();
+        client->reply(ERR_NOSUCHCHANNEL(std::string("ft_irc"), clientId, chanName));
         return;
     }
 
-    // Only operators can invite (project requirement)
+    // Only operators can invite
     if (!chan->isOperator(client))
     {
-        std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
-        client->reply(ERR_CHANOPRIVSNEEDED(std::string("ft_irc"), client_id, chan_name));
+        std::string clientId = client->getNickname().empty() ? "*" : client->getNickname();
+        client->reply(ERR_CHANOPRIVSNEEDED(std::string("ft_irc"), clientId, chanName));
         return;
     }
 
-    Client* target = _server.get_client_by_nickname(target_nick);
+    Client* target = _server.getClientByNickname(targetNick);
     if (!target)
     {
-        std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
-        client->reply(ERR_NOSUCHNICK(std::string("ft_irc"), client_id, target_nick));
+        std::string clientId = client->getNickname().empty() ? "*" : client->getNickname();
+        client->reply(ERR_NOSUCHNICK(std::string("ft_irc"), clientId, targetNick));
         return;
     }
 
     if (chan->hasMember(target))
     {
-        std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
-        client->reply(ERR_USERONCHANNEL(std::string("ft_irc"), client_id, target_nick, chan_name));
+        std::string clientId = client->getNickname().empty() ? "*" : client->getNickname();
+        client->reply(ERR_USERONCHANNEL(std::string("ft_irc"), clientId, targetNick, chanName));
         return;
     }
 
     // Add to invite list and notify
-    chan->invite(target_nick);
-    client->reply(RPL_INVITING(std::string("ft_irc"), client->get_nickname(), target_nick, chan_name));
+    chan->invite(targetNick);
+    client->reply(RPL_INVITING(std::string("ft_irc"), client->getNickname(), targetNick, chanName));
 
     // Send the invite message to the target
-    std::string invite_msg = ":" + client->get_prefix() + " INVITE " + target_nick + " :" + chan_name + "\r\n";
+    std::string invite_msg = ":" + client->getPrefix() + " INVITE " + targetNick + " :" + chanName + "\r\n";
     target->reply(invite_msg);
 }

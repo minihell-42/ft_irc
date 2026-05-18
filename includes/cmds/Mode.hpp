@@ -4,7 +4,7 @@
 #include "ACommand.hpp"
 
 class Mode : public ACommand {
-public:
+  public:
     Mode(Server& server);
     ~Mode();
 

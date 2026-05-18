@@ -4,11 +4,11 @@
 #include "ACommand.hpp"
 
 class Join : public ACommand {
-public:
-    Join(Server& server);
-    ~Join();
+    public:
+        Join(Server& server);
+        ~Join();
 
-    void execute(Client* client, std::vector<std::string>& args);
+        void execute(Client* client, std::vector<std::string>& args);
 };
 
 #endif

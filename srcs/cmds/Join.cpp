@@ -12,41 +12,41 @@ void Join::execute(Client* client, std::vector<std::string>& args)
 {
     if (args.empty())
     {
-        std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
-        client->reply(ERR_NEEDMOREPARAMS(std::string("ft_irc"), client_id, "JOIN"));
+        std::string clientId = client->getNickname().empty() ? "*" : client->getNickname();
+        client->reply(ERR_NEEDMOREPARAMS(std::string("ft_irc"), clientId, "JOIN"));
         return;
     }
 
-    std::string chan_name = args[0];
+    std::string chanName = args[0];
     std::string key = args.size() > 1 ? args[1] : std::string("");
 
-    Channel* chan = _server.get_channel(chan_name);
+    Channel* chan = _server.getChannel(chanName);
     if (!chan)
     {
-        chan = _server.create_channel(chan_name);
+        chan = _server.createChannel(chanName);
     }
 
     // Check invite-only
-    if (chan->isInviteOnly() && !chan->isInvited(client->get_nickname()))
+    if (chan->isInviteOnly() && !chan->isInvited(client->getNickname()))
     {
-        std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
-        client->reply(ERR_INVITEONLYCHAN(std::string("ft_irc"), client_id, chan_name));
+        std::string clientId = client->getNickname().empty() ? "*" : client->getNickname();
+        client->reply(ERR_INVITEONLYCHAN(std::string("ft_irc"), clientId, chanName));
         return;
     }
 
     // Check key
     if (!chan->getKey().empty() && chan->getKey() != key)
     {
-        std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
-        client->reply(ERR_BADCHANNELKEY(std::string("ft_irc"), client_id, chan_name));
+        std::string clientId = client->getNickname().empty() ? "*" : client->getNickname();
+        client->reply(ERR_BADCHANNELKEY(std::string("ft_irc"), clientId, chanName));
         return;
     }
 
     // try to add member
     if (!chan->addMember(client))
     {
-        std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
-        client->reply(ERR_CHANNELISFULL(std::string("ft_irc"), client_id, chan_name));
+        std::string clientId = client->getNickname().empty() ? "*" : client->getNickname();
+        client->reply(ERR_CHANNELISFULL(std::string("ft_irc"), clientId, chanName));
         return;
     }
 
@@ -55,15 +55,15 @@ void Join::execute(Client* client, std::vector<std::string>& args)
         chan->addOperator(client);
 
     // Clear any outstanding invite for this nick
-    chan->removeInvite(client->get_nickname());
+    chan->removeInvite(client->getNickname());
 
     // Broadcast join to other members
-    std::string join_msg = MSG_JOIN(client->get_prefix(), chan_name);
-    chan->broadcast(join_msg, client);
+    std::string joinMsg = MSG_JOIN(client->getPrefix(), chanName);
+    chan->broadcast(joinMsg, client);
 
     // Send NAMES reply to joining client
     // Build users list
     std::string users = chan->getMemberNames();
-    client->reply(RPL_NAMREPLY(std::string("ft_irc"), client->get_nickname(), "=", chan_name, users));
-    client->reply(RPL_ENDOFNAMES(std::string("ft_irc"), client->get_nickname(), chan_name));
+    client->reply(RPL_NAMREPLY(std::string("ft_irc"), client->getNickname(), "=", chanName, users));
+    client->reply(RPL_ENDOFNAMES(std::string("ft_irc"), client->getNickname(), chanName));
 }

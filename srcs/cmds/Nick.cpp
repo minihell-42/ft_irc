@@ -12,24 +12,24 @@ void Nick::execute(Client* client, std::vector<std::string>& args)
     if (args.empty())
     {
         std::cout << "NICK: No nick given." << std::endl;
-        std::string nick = client->get_nickname().empty() ? "*" : client->get_nickname();
+        std::string nick = client->getNickname().empty() ? "*" : client->getNickname();
         client->reply(ERR_NONICKNAMEGIVEN(std::string("ft_irc"), nick));
         return;
     }
     
-    std::string new_nick = args[0];
+    std::string newNick = args[0];
     
     // Check if the nick is already in use by another client
-    if (_server.is_nickname_in_use(new_nick))
+    if (_server.isNicknameInUse(newNick))
     {
-        std::cout << "NICK: Nickname '" << new_nick << "' is already in use." << std::endl;
-        std::string nick = client->get_nickname().empty() ? "*" : client->get_nickname();
-        client->reply(ERR_NICKNAMEINUSE(std::string("ft_irc"), nick, new_nick));
+        std::cout << "NICK: Nickname '" << newNick << "' is already in use." << std::endl;
+        std::string nick = client->getNickname().empty() ? "*" : client->getNickname();
+        client->reply(ERR_NICKNAMEINUSE(std::string("ft_irc"), nick, newNick));
         return;
     }
     
-    client->set_nickname(new_nick);
-    std::cout << "Nick for fd " << client->get_fd() << " set to: " << new_nick << std::endl;
+    client->setNickname(newNick);
+    std::cout << "Nick for fd " << client->getFd() << " set to: " << newNick << std::endl;
     
-    _server.try_register(client);
+    _server.tryRegister(client);
 }

@@ -16,8 +16,8 @@ void Ping::execute(Client* client, std::vector<std::string>& args)
     
     std::string token = args[0];
     
-    std::string reply = "PONG " + _server.get_name() + " :" + token + "\r\n";
+    std::string reply = "PONG " + _server.getName() + " :" + token + "\r\n";
     
-    send(client->get_fd(), reply.c_str(), reply.length(), 0);
-    std::cout << "Sent PONG to fd " << client->get_fd() << std::endl;
+    send(client->getFd(), reply.c_str(), reply.length(), 0);
+    std::cout << "Sent PONG to fd " << client->getFd() << std::endl;
 }

@@ -4,7 +4,7 @@
 #include "ACommand.hpp"
 
 class Part : public ACommand {
-public:
+  public:
     Part(Server& server);
     ~Part();
 

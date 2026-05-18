@@ -12,39 +12,39 @@ void Part::execute(Client* client, std::vector<std::string>& args)
 {
     if (args.empty())
     {
-        std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
-        client->reply(ERR_NEEDMOREPARAMS(std::string("ft_irc"), client_id, "PART"));
+        std::string clientId = client->getNickname().empty() ? "*" : client->getNickname();
+        client->reply(ERR_NEEDMOREPARAMS(std::string("ft_irc"), clientId, "PART"));
         return;
     }
 
-    std::string chan_name = args[0];
+    std::string chanName = args[0];
     std::string reason = args.size() > 1 ? args[1] : std::string("");
 
-    Channel* chan = _server.get_channel(chan_name);
+    Channel* chan = _server.getChannel(chanName);
     if (!chan)
     {
-        std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
-        client->reply(ERR_NOSUCHCHANNEL(std::string("ft_irc"), client_id, chan_name));
+        std::string clientId = client->getNickname().empty() ? "*" : client->getNickname();
+        client->reply(ERR_NOSUCHCHANNEL(std::string("ft_irc"), clientId, chanName));
         return;
     }
 
     if (!chan->hasMember(client))
     {
-        std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
-        client->reply(ERR_NOTONCHANNEL(std::string("ft_irc"), client_id, chan_name));
+        std::string clientId = client->getNickname().empty() ? "*" : client->getNickname();
+        client->reply(ERR_NOTONCHANNEL(std::string("ft_irc"), clientId, chanName));
         return;
     }
 
-    std::string part_msg = MSG_PART(client->get_prefix(), chan_name, reason);
+    std::string partMsg = MSG_PART(client->getPrefix(), chanName, reason);
 
     // Send the PART to the leaving client
-    client->reply(part_msg);
+    client->reply(partMsg);
     // Broadcast to others
-    chan->broadcast(part_msg, client);
+    chan->broadcast(partMsg, client);
 
     chan->removeMember(client);
 
     // If channel is empty, remove it from server
     if (chan->memberCount() == 0)
-        _server.remove_channel(chan_name);
+        _server.removeChannel(chanName);
 }

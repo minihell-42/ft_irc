@@ -4,11 +4,11 @@
 #include "ACommand.hpp"
 
 class Privmsg : public ACommand {
-public:
-    Privmsg(Server& server);
-    ~Privmsg();
+    public:
+        Privmsg(Server& server);
+        ~Privmsg();
 
-    void execute(Client* client, std::vector<std::string>& args);
+        void execute(Client* client, std::vector<std::string>& args);
 };
 
 #endif

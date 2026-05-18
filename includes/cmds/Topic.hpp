@@ -4,7 +4,7 @@
 #include "ACommand.hpp"
 
 class Topic : public ACommand {
-public:
+  public:
     Topic(Server& server);
     ~Topic();
 

@@ -24,7 +24,7 @@ std::string Channel::getMemberNames() const
         Client* c = *it;
         if (!c) continue;
         if (!users.empty()) users += " ";
-        users += c->get_nickname();
+        users += c->getNickname();
     }
     return users;
 }

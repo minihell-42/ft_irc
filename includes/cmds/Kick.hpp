@@ -4,7 +4,7 @@
 #include "ACommand.hpp"
 
 class Kick : public ACommand {
-public:
+  public:
     Kick(Server& server);
     ~Kick();
 
