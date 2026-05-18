@@ -31,7 +31,7 @@ void Kick::execute(Client* client, std::vector<std::string>& args)
     }
 
     // Only channel operators can kick
-    if (!chan->is_operator(client))
+    if (!chan->isOperator(client))
     {
         std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
         client->reply(ERR_CHANOPRIVSNEEDED(std::string("ft_irc"), client_id, chan_name));
@@ -46,7 +46,7 @@ void Kick::execute(Client* client, std::vector<std::string>& args)
         return;
     }
 
-    if (!chan->has_member(target))
+    if (!chan->hasMember(target))
     {
         std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
         client->reply(ERR_USERNOTINCHANNEL(std::string("ft_irc"), client_id, target_nick, chan_name));
@@ -61,9 +61,9 @@ void Kick::execute(Client* client, std::vector<std::string>& args)
     chan->broadcast(kick_msg, target);
 
     // Remove the user from channel
-    chan->remove_member(target);
+    chan->removeMember(target);
 
     // If channel empty, remove channel from server
-    if (chan->member_count() == 0)
+    if (chan->memberCount() == 0)
         _server.remove_channel(chan_name);
 }

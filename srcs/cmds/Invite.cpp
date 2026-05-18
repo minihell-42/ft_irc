@@ -30,7 +30,7 @@ void Invite::execute(Client* client, std::vector<std::string>& args)
     }
 
     // Only operators can invite (project requirement)
-    if (!chan->is_operator(client))
+    if (!chan->isOperator(client))
     {
         std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
         client->reply(ERR_CHANOPRIVSNEEDED(std::string("ft_irc"), client_id, chan_name));
@@ -45,7 +45,7 @@ void Invite::execute(Client* client, std::vector<std::string>& args)
         return;
     }
 
-    if (chan->has_member(target))
+    if (chan->hasMember(target))
     {
         std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
         client->reply(ERR_USERONCHANNEL(std::string("ft_irc"), client_id, target_nick, chan_name));

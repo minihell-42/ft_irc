@@ -37,7 +37,7 @@ void Mode::execute(Client* client, std::vector<std::string>& args)
     }
 
     // Only channel operators can change modes
-    if (!chan->is_operator(client))
+    if (!chan->isOperator(client))
     {
         std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
         client->reply(ERR_CHANOPRIVSNEEDED(std::string("ft_irc"), client_id, target));
@@ -56,10 +56,10 @@ void Mode::execute(Client* client, std::vector<std::string>& args)
         switch (c)
         {
             case 'i':
-                chan->set_invite_only(add);
+                chan->setInviteOnly(add);
                 break;
             case 't':
-                chan->set_topic_restricted(add);
+                chan->setTopicRestricted(add);
                 break;
             case 'k':
                 if (add)
@@ -70,11 +70,11 @@ void Mode::execute(Client* client, std::vector<std::string>& args)
                         client->reply(ERR_NEEDMOREPARAMS(std::string("ft_irc"), client_id, "MODE"));
                         return;
                     }
-                    chan->set_key(args[param_index++]);
+                    chan->setKey(args[param_index++]);
                 }
                 else
                 {
-                    chan->set_key("");
+                    chan->setKey("");
                 }
                 break;
             case 'l':
@@ -87,11 +87,11 @@ void Mode::execute(Client* client, std::vector<std::string>& args)
                         return;
                     }
                     int limit = std::atoi(args[param_index++].c_str());
-                    chan->set_limit(limit);
+                    chan->setLimit(limit);
                 }
                 else
                 {
-                    chan->set_limit(0);
+                    chan->setLimit(0);
                 }
                 break;
             case 'o':
@@ -112,9 +112,9 @@ void Mode::execute(Client* client, std::vector<std::string>& args)
                         return;
                     }
                     if (add)
-                        chan->add_operator(target_client);
+                        chan->addOperator(target_client);
                     else
-                        chan->remove_operator(target_client);
+                        chan->removeOperator(target_client);
                 }
                 break;
             default:

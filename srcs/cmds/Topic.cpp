@@ -26,7 +26,7 @@ void Topic::execute(Client* client, std::vector<std::string>& args)
         return;
     }
 
-    if (!chan->has_member(client))
+    if (!chan->hasMember(client))
     {
         std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
         client->reply(ERR_NOTONCHANNEL(std::string("ft_irc"), client_id, chan_name));
@@ -36,10 +36,10 @@ void Topic::execute(Client* client, std::vector<std::string>& args)
     // If only channel argument -> show topic
     if (args.size() == 1)
     {
-        if (chan->get_topic().empty())
+        if (chan->getTopic().empty())
             client->reply(RPL_NOTOPIC(std::string("ft_irc"), client->get_nickname(), chan_name));
         else
-            client->reply(RPL_TOPIC(std::string("ft_irc"), client->get_nickname(), chan_name, chan->get_topic()));
+            client->reply(RPL_TOPIC(std::string("ft_irc"), client->get_nickname(), chan_name, chan->getTopic()));
         return;
     }
 
@@ -47,14 +47,14 @@ void Topic::execute(Client* client, std::vector<std::string>& args)
     std::string new_topic = args[1];
 
     // If channel has +t (topic restricted), only operators can set it
-    if (chan->is_topic_restricted() && !chan->is_operator(client))
+    if (chan->isTopicRestricted() && !chan->isOperator(client))
     {
         std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
         client->reply(ERR_CHANOPRIVSNEEDED(std::string("ft_irc"), client_id, chan_name));
         return;
     }
 
-    chan->set_topic(new_topic);
+    chan->setTopic(new_topic);
 
     // Notify channel members of topic change
     std::string topic_msg = ":" + client->get_prefix() + " TOPIC " + chan_name + " :" + new_topic + "\r\n";

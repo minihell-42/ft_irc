@@ -28,7 +28,7 @@ void Part::execute(Client* client, std::vector<std::string>& args)
         return;
     }
 
-    if (!chan->has_member(client))
+    if (!chan->hasMember(client))
     {
         std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
         client->reply(ERR_NOTONCHANNEL(std::string("ft_irc"), client_id, chan_name));
@@ -42,9 +42,9 @@ void Part::execute(Client* client, std::vector<std::string>& args)
     // Broadcast to others
     chan->broadcast(part_msg, client);
 
-    chan->remove_member(client);
+    chan->removeMember(client);
 
     // If channel is empty, remove it from server
-    if (chan->member_count() == 0)
+    if (chan->memberCount() == 0)
         _server.remove_channel(chan_name);
 }

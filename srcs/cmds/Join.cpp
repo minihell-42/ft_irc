@@ -27,7 +27,7 @@ void Join::execute(Client* client, std::vector<std::string>& args)
     }
 
     // Check invite-only
-    if (chan->is_invite_only() && !chan->is_invited(client->get_nickname()))
+    if (chan->isInviteOnly() && !chan->isInvited(client->get_nickname()))
     {
         std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
         client->reply(ERR_INVITEONLYCHAN(std::string("ft_irc"), client_id, chan_name));
@@ -35,7 +35,7 @@ void Join::execute(Client* client, std::vector<std::string>& args)
     }
 
     // Check key
-    if (!chan->get_key().empty() && chan->get_key() != key)
+    if (!chan->getKey().empty() && chan->getKey() != key)
     {
         std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
         client->reply(ERR_BADCHANNELKEY(std::string("ft_irc"), client_id, chan_name));
@@ -43,7 +43,7 @@ void Join::execute(Client* client, std::vector<std::string>& args)
     }
 
     // try to add member
-    if (!chan->add_member(client))
+    if (!chan->addMember(client))
     {
         std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
         client->reply(ERR_CHANNELISFULL(std::string("ft_irc"), client_id, chan_name));
@@ -51,11 +51,11 @@ void Join::execute(Client* client, std::vector<std::string>& args)
     }
 
     // If first member, make operator
-    if (chan->member_count() == 1)
-        chan->add_operator(client);
+    if (chan->memberCount() == 1)
+        chan->addOperator(client);
 
     // Clear any outstanding invite for this nick
-    chan->remove_invite(client->get_nickname());
+    chan->removeInvite(client->get_nickname());
 
     // Broadcast join to other members
     std::string join_msg = MSG_JOIN(client->get_prefix(), chan_name);
@@ -63,7 +63,7 @@ void Join::execute(Client* client, std::vector<std::string>& args)
 
     // Send NAMES reply to joining client
     // Build users list
-    std::string users = chan->get_member_names();
+    std::string users = chan->getMemberNames();
     client->reply(RPL_NAMREPLY(std::string("ft_irc"), client->get_nickname(), "=", chan_name, users));
     client->reply(RPL_ENDOFNAMES(std::string("ft_irc"), client->get_nickname(), chan_name));
 }

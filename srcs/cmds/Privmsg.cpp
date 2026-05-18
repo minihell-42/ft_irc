@@ -30,7 +30,7 @@ void Privmsg::execute(Client* client, std::vector<std::string>& args)
 			return;
 		}
 		// Check membership
-		if (!chan->has_member(client))
+		if (!chan->hasMember(client))
 		{
 			std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
 			client->reply(ERR_CANNOTSENDTOCHAN(std::string("ft_irc"), client_id, target));
