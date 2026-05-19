@@ -1,4 +1,4 @@
-*This project has been created as part of the 42 curriculum by samcasti and d-gomez-a.
+*This project has been created as part of the 42 curriculum by samcasti and dgomez-a.
 
 ## Description
 **ft_irc** is a custom Internet Relay Chat (IRC) server written in C++98. The goal of this project is to implement an RFC-compliant IRC server capable of handling multiple concurrent clients using a single-threaded non-blocking I/O multiplexing architecture (via `poll()`). This project focuses heavily on socket programming, networking protocols, command parsing, and robust state management.

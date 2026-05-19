@@ -163,8 +163,8 @@ void Server::run()
 					clientDisconnect(_pfds[i].fd);
 			} catch (std::exception& e) {
 				std::cerr << "Error: " << e.what() << std::endl;
-				if (_pfds[i].fd != -1 && _pfds[i].fd != _socket_fd)
-					client_disconnect(_pfds[i].fd);
+				if (_pfds[i].fd != -1 && _pfds[i].fd != _socketFd)
+					clientDisconnect(_pfds[i].fd);
 			}
 		}
 
