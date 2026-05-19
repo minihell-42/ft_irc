@@ -10,5 +10,5 @@ void Quit::execute(Client* client, std::vector<std::string>& args)
 {
 	(void)args;
 	
-	client->set_state(DISCONNECTED);
+	client->setState(DISCONNECTED);
 }

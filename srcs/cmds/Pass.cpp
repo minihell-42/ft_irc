@@ -9,9 +9,9 @@ Pass::~Pass() {}
 
 void Pass::execute(Client* client, std::vector<std::string>& args)
 {
-    std::string nick = client->get_nickname().empty() ? "*" : client->get_nickname();
+    std::string nick = client->getNickname().empty() ? "*" : client->getNickname();
 
-    if (client->get_state() == REGISTERED)
+    if (client->getState() == REGISTERED)
     {
         std::cout << "Already registered." << std::endl;
         client->reply(ERR_ALREADYREGISTRED(std::string("ft_irc"), nick));
@@ -23,15 +23,15 @@ void Pass::execute(Client* client, std::vector<std::string>& args)
         client->reply(ERR_NEEDMOREPARAMS(std::string("ft_irc"), nick, std::string("PASS")));
         return;
     }
-    if (args[0] != _server.get_password())
+    if (args[0] != _server.getPassword())
     {
         std::cout << "PASS: Password mismatch." << std::endl;
         client->reply(ERR_PASSWDMISMATCH(std::string("ft_irc"), nick));
         return;
     }
     
-    std::cout << "PASS accepted for fd " << client->get_fd() << std::endl;
-    client->set_state(LOGIN);
+    std::cout << "PASS accepted for fd " << client->getFd() << std::endl;
+    client->setState(LOGIN);
     
-    _server.try_register(client);
+    _server.tryRegister(client);
 }

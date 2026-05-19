@@ -2,14 +2,13 @@
 #define PASS_HPP
 
 #include "ACommand.hpp"
-#include <iostream>
 
 class Pass : public ACommand {
-public:
-    Pass(Server& server);
-    ~Pass();
+    public:
+        Pass(Server& server);
+        ~Pass();
 
-    void execute(Client* client, std::vector<std::string>& args);
+        void execute(Client* client, std::vector<std::string>& args);
 };
 
 #endif

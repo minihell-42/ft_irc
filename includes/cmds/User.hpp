@@ -6,11 +6,11 @@
 #include "../../includes/Server.hpp"
 
 class User : public ACommand {
-public:
-    User(Server& server);
-    ~User();
+    public:
+        User(Server& server);
+        ~User();
 
-    void execute(Client* client, std::vector<std::string>& args);
+        void execute(Client* client, std::vector<std::string>& args);
 };
 
 #endif

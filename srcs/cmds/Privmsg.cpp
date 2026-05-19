@@ -11,8 +11,8 @@ void Privmsg::execute(Client* client, std::vector<std::string>& args)
 {
 	if (args.size() < 2 || args[0].empty() || args[1].empty())
 	{
-    	std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
-		client->reply(ERR_NEEDMOREPARAMS(std::string("ft_irc"), client_id, "PRIVMSG"));
+    	std::string clientId = client->getNickname().empty() ? "*" : client->getNickname();
+		client->reply(ERR_NEEDMOREPARAMS(std::string("ft_irc"), clientId, "PRIVMSG"));
 		return;
 	} 
 
@@ -22,25 +22,38 @@ void Privmsg::execute(Client* client, std::vector<std::string>& args)
 	// Determine if target is a channel (starts with # or &)
 	if (target[0] == '#' || target[0] == '&')
 	{
-		// TODO: Channel messaging implementation
-		std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
-		
-		client->reply(ERR_NOSUCHCHANNEL(std::string("ft_irc"), client_id, target));
+		Channel* chan = _server.getChannel(target);
+		if (!chan)
+		{
+			std::string clientId = client->getNickname().empty() ? "*" : client->getNickname();
+			client->reply(ERR_NOSUCHCHANNEL(std::string("ft_irc"), clientId, target));
+			return;
+		}
+		// Check membership
+		if (!chan->hasMember(client))
+		{
+			std::string clientId = client->getNickname().empty() ? "*" : client->getNickname();
+			client->reply(ERR_CANNOTSENDTOCHAN(std::string("ft_irc"), clientId, target));
+			return;
+		}
+		// Broadcast to channel members except sender
+		std::string msg = ":" + client->getPrefix() + " PRIVMSG " + target + " :" + message + "\r\n";
+		chan->broadcast(msg, client);
 	}
 	else
 	{
 		// Target is a user
-		Client* target_client = _server.get_client_by_nickname(target);
-		if (!target_client)
+		Client* targetClient = _server.getClientByNickname(target);
+		if (!targetClient)
 		{
-			std::string client_id = client->get_nickname().empty() ? "*" : client->get_nickname();
-			client->reply(ERR_NOSUCHNICK(std::string("ft_irc"), client_id, target));
+			std::string clientId = client->getNickname().empty() ? "*" : client->getNickname();
+			client->reply(ERR_NOSUCHNICK(std::string("ft_irc"), clientId, target));
 			return;
 		}
 
 		// Send message to target user
 		// Format: :<sender_prefix> PRIVMSG <target> :<message>
-		std::string msg_to_send = ":" + client->get_prefix() + " PRIVMSG " + target + " :" + message + "\r\n";
-		target_client->reply(msg_to_send);
+		std::string msgToSend = ":" + client->getPrefix() + " PRIVMSG " + target + " :" + message + "\r\n";
+		targetClient->reply(msgToSend);
 	}
 }

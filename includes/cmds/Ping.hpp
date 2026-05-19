@@ -4,11 +4,11 @@
 #include "ACommand.hpp"
 
 class Ping : public ACommand {
-public:
-    Ping(Server& server);
-    ~Ping();
+    public:
+        Ping(Server& server);
+        ~Ping();
 
-    void execute(Client* client, std::vector<std::string>& args);
+        void execute(Client* client, std::vector<std::string>& args);
 };
 
 #endif

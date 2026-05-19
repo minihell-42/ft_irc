@@ -8,12 +8,12 @@ class Client;
 class Server;
 
 class ACommand {
-protected:
-  Server &_server;
+  protected:
+    Server &_server;
 
-public:
-  ACommand(Server &server);
-  virtual ~ACommand();
-  virtual void execute(Client *client, std::vector<std::string> &args) = 0;
+  public:
+    ACommand(Server &server);
+    virtual ~ACommand();
+    virtual void execute(Client *client, std::vector<std::string> &args) = 0;
 };
 #endif
