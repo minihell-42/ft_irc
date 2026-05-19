@@ -29,6 +29,11 @@ std::string Channel::getMemberNames() const
     return users;
 }
 
+const std::set<Client*>& Channel::getMembers() const
+{
+    return _members;
+}
+
 int Channel::getLimit() const { return _limit; }
 
 // Setters

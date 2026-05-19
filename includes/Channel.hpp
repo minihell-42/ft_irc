@@ -26,6 +26,7 @@ class Channel {
 		std::string getTopic() const;
 		std::string getKey() const;
 		std::string getMemberNames() const;
+		const std::set<Client*>& getMembers() const;
 		int 				getLimit() const;
 		
 		void 				setLimit(int limit);
