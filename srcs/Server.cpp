@@ -121,8 +121,8 @@ void Server::run()
 
 		if (poll(&_pfds[0], _pfds.size(), -1) < 0)
 		{
-			if (errno == EINTR)
-				continue;
+			if (!_running)
+				break;
 			throw PollFailedError();
 		}
 
@@ -147,6 +147,8 @@ void Server::run()
 					client_disconnect(_pfds[i].fd);
 			} catch (std::exception& e) {
 				std::cerr << "Error: " << e.what() << std::endl;
+				if (_pfds[i].fd != -1 && _pfds[i].fd != _socket_fd)
+					client_disconnect(_pfds[i].fd);
 			}
 		}
 

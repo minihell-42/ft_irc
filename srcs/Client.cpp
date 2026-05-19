@@ -47,13 +47,7 @@ void Client::send_pending_output()
 
 	int bytes_sent = send(_fd, _write_buffer.c_str(), _write_buffer.length(), 0);
 	if (bytes_sent > 0)
-	{
 		_write_buffer.erase(0, bytes_sent);
-	}
 	else if (bytes_sent == -1)
-	{
-		// If EAGAIN or EWOULDBLOCK, we just wait for the next POLLOUT
-		if (errno != EAGAIN && errno != EWOULDBLOCK)
-			throw Server::SendError();
-	}
+		throw Server::SendError();
 }
