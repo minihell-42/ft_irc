@@ -1,38 +1,42 @@
-# ft_irc
+*This project has been created as part of the 42 curriculum by samcasti and d-gomez-a.
 
-This project is a custom implementation of an Internet Relay Chat (IRC) server in C++98, built according to RFC 2812. It is designed to handle multiple concurrent client connections using an asynchronous, event-driven architecture.
+## Description
+**ft_irc** is a custom Internet Relay Chat (IRC) server written in C++98. The goal of this project is to implement an RFC-compliant IRC server capable of handling multiple concurrent clients using a single-threaded non-blocking I/O multiplexing architecture (via `poll()`). This project focuses heavily on socket programming, networking protocols, command parsing, and robust state management.
 
-## Current Features & Architecture
+## Instructions
 
-### Core Networking & Event Loop
-- **Non-Blocking I/O:** All server and client sockets operate in non-blocking mode (`O_NONBLOCK`).
-- **Event-Driven Polling:** Uses the `poll()` system call to monitor state changes across all connected file descriptors efficiently.
-- **Robust Buffer Management:** 
-  - **Read Buffers:** Each client has a dedicated read buffer that re-assembles fragmented TCP packets until a complete command (ending in `\r\n`) is received.
-  - **Write Buffers:** Prevents `send()` blocking issues by queueing outbound messages into a write buffer. The server waits for a `POLLOUT` event before attempting to flush the buffer to the socket, preventing lost messages on slow connections.
-- **Security & Stability:** Incorporates protections against buffer overflow attacks by forcibly disconnecting malicious clients that send excessive data without valid line terminations.
+### Compilation
+To compile the project, run `make` at the root of the repository. This will compile the source files and generate the executable:
+```bash
+make
+```
 
-### Command Routing & Authentication
-- **Command Pattern:** Utilizes an object-oriented Command Pattern (`ACommand`) to route, parse, and execute incoming IRC messages cleanly.
-- **Strict Registration Flow:** Enforces the standard IRC connection sequence. Clients must successfully authenticate before they are allowed to interact with the server:
-  1. `PASS` (Server password verification)
-  2. `NICK` (Unique nickname selection)
-  3. `USER` (Username and realname definition)
-- **Connection Management:** Implements the `QUIT` command for graceful disconnection and the `PING`/`PONG` commands to keep client connections alive.
-- **Unauthorized Command Protection:** Any attempt to execute operational commands (like `JOIN` or `PRIVMSG`) prior to completing the registration sequence is intercepted and rejected with an `ERR_NOTREGISTERED` response.
-- **Automatic Registration:** The server intelligently detects when a client has fulfilled all authentication criteria (regardless of the order they send it) and automatically upgrades their state to `REGISTERED`, firing off the standard IRC Welcome messages (`001`, `002`, `003`, `004`).
+### Execution
+The server requires a port number and a connection password to start:
+```bash
+./ircserv <port> <password>
+```
+Example:
+```bash
+./ircserv 6667 my_secret_password
+```
 
-### Messaging
-- **Direct Messaging (`PRIVMSG`):** Users can send private messages to other users by nickname. The server looks up the target client and routes the message appropriately.
-- **Automated Notices (`NOTICE`):** Fully supports the `NOTICE` command, behaving identically to `PRIVMSG` but strictly adhering to RFC 2812 by never sending automatic error replies (preventing infinite loops between bots).
+### Connecting to the Server
+You can connect to the server using a standard IRC client (such as `irssi`, `WeeChat`, or `kvirc`) or simply via `nc` (Netcat):
+```bash
+nc 127.0.0.1 6667
+```
+Once connected, you must authenticate using the password provided during server startup (e.g., `PASS my_secret_password`) and register your nickname and user details.
 
-## Next Steps
+## Resources
 
-1. **Channel Management:**
-   - **`JOIN` & `PART`:** Allow users to create, enter, and leave channels.
-   - **Broadcasting:** Implement the logic to broadcast messages to all users within a specific channel.
-   - **`TOPIC`:** Allow users to view and change channel topics.
+### References
+- **RFC 2812 (Internet Relay Chat: Client Protocol):** The primary standard outlining client-server communication for IRC. [https://datatracker.ietf.org/doc/html/rfc2812](https://datatracker.ietf.org/doc/html/rfc2812)
+- **Beej's Guide to Network Programming:** An essential resource for understanding sockets, `bind()`, `listen()`, `accept()`, and `poll()`. [https://beej.us/guide/bgnet/](https://beej.us/guide/bgnet/)
+- **Modern IRC Client Protocol:** A more readable and modern interpretation of the IRC specifications. [https://modern.ircdocs.horse/](https://modern.ircdocs.horse/)
 
-2. **Channel Operators & Modes:**
-   - Implement channel operator privileges (`+o`) and mode management (`MODE` command).
-   - Implement operator-only commands such as `KICK` and `INVITE`.
+### AI Usage
+During the development of this project, Artificial Intelligence was used in the following ways:
+- **Bug Fixing and C++98 Compliance:** Assisting in identifying memory leaks, resolving template linking errors, and ensuring that modern C++ patterns were correctly adapted to strict C++98 standards.
+- **Protocol Clarification:** Summarizing and clarifying specific behaviors mandated by RFC 2812, such as proper command sequences, numeric replies, and state transitions.
+- **Documentation and Architecture:** Aiding in the generation of documentation files, architectural notes, and providing clear explanations of complex network system calls (e.g., `poll()` and non-blocking I/O).
