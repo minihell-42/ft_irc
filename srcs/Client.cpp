@@ -54,9 +54,9 @@ void Client::sendPendingOutput()
 	if (_writeBuffer.empty())
 		return;
 
-	int bytes_sent = send(_fd, _write_buffer.c_str(), _write_buffer.length(), 0);
-	if (bytes_sent > 0)
-		_write_buffer.erase(0, bytes_sent);
-	else if (bytes_sent == -1)
+	int bytesSent = send(_fd, _writeBuffer.c_str(), _writeBuffer.length(), 0);
+	if (bytesSent > 0)
+		_writeBuffer.erase(0, bytesSent);
+	else if (bytesSent == -1)
 		throw Server::SendError();
 }
