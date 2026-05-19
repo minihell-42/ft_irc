@@ -1,23 +1,30 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
+#include <algorithm>
 #include <arpa/inet.h>
 #include <ctime>
+#include <errno.h>
 #include <fcntl.h>
+#include <iostream>
 #include <map>
 #include <netdb.h>
 #include <netinet/in.h>
 #include <poll.h>
+#include <signal.h>
+#include <sstream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <string>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <utility>
+
 #include "Channel.hpp"
 #include "Client.hpp"
 #include "cmds/ACommand.hpp"
-#include <iostream>
 
 class Server {
   private:
@@ -25,8 +32,8 @@ class Server {
     int                               _socketFd;
     static bool                       _running;
     std::string                       _createdAt;
-    const std::string                 _pass;
     const std::string                 _name;
+    const std::string                 _pass;
     std::vector<pollfd>               _pfds;
     std::map<int, Client*>            _clients;
     std::map<std::string, Channel*>   _channels;

@@ -2,7 +2,7 @@
 #include "../includes/Client.hpp"
 
 Channel::Channel(const std::string &name)
-    : _name(name), _topic(""), _inviteOnly(false), _key("") , _limit(0)
+    : _name(name), _topic(""), _key(""), _limit(0), _inviteOnly(false)
 {
     _topicRestricted = false;
 }

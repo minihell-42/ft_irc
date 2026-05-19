@@ -80,25 +80,25 @@ void Server::initSocket()
     	throw CreateSocketError();
 
 	// forcefully attacing socket to the port by making it reusable
-    int optval = 1;
-    if (setsockopt(_socketFd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) == -1)
-        throw SetSocketOptionError();
+  int optval = 1;
+  if (setsockopt(_socketFd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) == -1)
+    throw SetSocketOptionError();
 
-    // making the socket NON-BLOCKING
-    if (fcntl(_socketFd, F_SETFL, O_NONBLOCK) == -1)
-        throw NonBlockingSocketError();
+  // making the socket NON-BLOCKING
+  if (fcntl(_socketFd, F_SETFL, O_NONBLOCK) == -1)
+    throw NonBlockingSocketError();
 
 	servAddr.sin_family = AF_INET;
 	servAddr.sin_port = htons(_port);
 	servAddr.sin_addr.s_addr = htonl(INADDR_ANY);
 
 	// bind socket to an IP address on selected port
-    if (bind(_socketFd, (sockaddr *) &servAddr, sizeof(servAddr)) == -1)
-        throw BindSocketError();
+  if (bind(_socketFd, (sockaddr *) &servAddr, sizeof(servAddr)) == -1)
+    throw BindSocketError();
 
-    // listening for requests
-    if (listen(_socketFd, SOMAXCONN) == -1)
-        throw ListenSocketError();
+  // listening for requests
+  if (listen(_socketFd, SOMAXCONN) == -1)
+    throw ListenSocketError();
 }
 
 void Server::run()
