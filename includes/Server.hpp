@@ -72,6 +72,7 @@ class Server {
     Channel* getChannel(const std::string &name) const;
     Channel* createChannel(const std::string &name);
     void removeChannel(const std::string &name);
+    const std::map<std::string, Channel*>& getChannels() const;
 
     // EXCEPTIONS
     class IncorrectPort : public std::exception {

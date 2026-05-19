@@ -13,6 +13,8 @@
 #include "../includes/cmds/Kick.hpp"
 #include "../includes/cmds/Invite.hpp"
 #include "../includes/response.hpp"
+#include "../includes/cmds/List.hpp"
+#include "../includes/cmds/Names.hpp"
 
 bool Server::_running = true;
 
@@ -42,6 +44,8 @@ Server::Server(char **av) : _name("irc.miservidor.com"), _pass(av[2])
 	_commands["MODE"] = new Mode(*this);
 	_commands["KICK"] = new Kick(*this);
 	_commands["INVITE"] = new Invite(*this);
+	_commands["LIST"] = new List(*this);
+	_commands["NAMES"] = new Names(*this);
 	_commands["QUIT"] = new Quit(*this);
 	_commands["PING"] = new Ping(*this);
 	_commands["PRIVMSG"] = new Privmsg(*this);
@@ -223,6 +227,11 @@ void Server::removeChannel(const std::string &name)
 		delete it->second;
 		_channels.erase(it);
 	}
+}
+
+const std::map<std::string, Channel*>& Server::getChannels() const
+{
+	return _channels;
 }
 
 // CLIENT EVENTS
