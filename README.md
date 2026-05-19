@@ -28,6 +28,56 @@ nc 127.0.0.1 6667
 ```
 Once connected, you must authenticate using the password provided during server startup (e.g., `PASS my_secret_password`) and register your nickname and user details.
 
+## Implemented Features
+
+This server implements the core functionalities of an IRC server following RFC 2812. It supports multiple clients, channel management, and various commands using a flexible **Command Pattern** architecture.
+
+### Supported Commands & Usage
+
+Here is a list of the implemented IRC commands and how to use them:
+
+#### Connection & Registration
+- **PASS**: Set the connection password. Must be the first command sent.
+  - Usage: `PASS <password>`
+- **NICK**: Set or change your nickname.
+  - Usage: `NICK <nickname>`
+- **USER**: Specify user details (username, hostname, servername, realname).
+  - Usage: `USER <username> 0 * :<real name>`
+- **QUIT**: Disconnect from the server.
+  - Usage: `QUIT [:<quit message>]`
+- **PING**: Check if the server is responsive.
+  - Usage: `PING <token>`
+
+#### Communication
+- **PRIVMSG**: Send a private message to a user or a channel.
+  - Usage: `PRIVMSG <target> :<message>`
+- **NOTICE**: Send a notice message (similar to PRIVMSG, but never triggers automated replies).
+  - Usage: `NOTICE <target> :<message>`
+
+#### Channel Management
+- **JOIN**: Join a channel or create it if it doesn't exist.
+  - Usage: `JOIN <channel> [<key>]`
+- **PART**: Leave a channel.
+  - Usage: `PART <channel> [:<part message>]`
+- **TOPIC**: View or change the topic of a channel.
+  - Usage: `TOPIC <channel> [:<new topic>]`
+- **NAMES**: List the users in a channel.
+  - Usage: `NAMES <channel>`
+- **LIST**: List all channels on the server.
+  - Usage: `LIST`
+- **INVITE**: Invite a user to a channel.
+  - Usage: `INVITE <nickname> <channel>`
+- **KICK**: Forcibly remove a user from a channel (requires operator privileges).
+  - Usage: `KICK <channel> <nickname> [:<reason>]`
+- **MODE**: Change channel modes (requires operator privileges).
+  - Usage: `MODE <channel> <+modes|-modes> [<mode parameters>]`
+  - *Supported Modes*:
+    - `i`: Invite-only channel (`+i` / `-i`)
+    - `t`: Topic set restricted to channel operators (`+t` / `-t`)
+    - `k`: Set/remove the channel key (password) (`+k <password>` / `-k`)
+    - `o`: Give/take channel operator privilege (`+o <nickname>` / `-o <nickname>`)
+    - `l`: Set/remove the user limit to channel (`+l <limit>` / `-l`)
+
 ## Resources
 
 ### References
