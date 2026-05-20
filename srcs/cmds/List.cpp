@@ -19,9 +19,11 @@ void List::execute(Client* client, std::vector<std::string>& args)
     {
         Channel* ch = it->second;
         if (!ch) continue;
-        std::string count = std::to_string(ch->memberCount());
+        std::ostringstream count;
+        count << ch->memberCount();
+        std::string str = count.str();
         std::string topic = ch->getTopic();
-        client->reply(RPL_LIST(_server.getName(), nick, ch->getName(), count, topic));
+        client->reply(RPL_LIST(_server.getName(), nick, ch->getName(), str, topic));
     }
 
     client->reply(RPL_LISTEND(_server.getName(), nick));
