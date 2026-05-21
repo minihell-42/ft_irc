@@ -5,7 +5,10 @@
 int main(int ac, char **av)
 {
 	if (ac != 3)
-		throw std::invalid_argument("Usage: ./ircserv <port> <password>");
+	{
+		std::cerr << "Usage: ./ircserv <port> <password>" << std::endl;
+		return 1;
+	}
 	try {
 		Server server(av);
 		server.run();
