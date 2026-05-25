@@ -7,7 +7,27 @@ INCLUDES = -I ./includes
 SRCS_DIR = srcs
 OBJ_DIR = obj
 
-SRCS = $(wildcard $(SRCS_DIR)/*.cpp) $(wildcard $(SRCS_DIR)/cmds/*.cpp)
+SRCS = \
+	$(SRCS_DIR)/main.cpp \
+	$(SRCS_DIR)/Channel.cpp \
+	$(SRCS_DIR)/Client.cpp \
+	$(SRCS_DIR)/Server.cpp \
+	$(SRCS_DIR)/cmds/ACommand.cpp \
+	$(SRCS_DIR)/cmds/Invite.cpp \
+	$(SRCS_DIR)/cmds/Join.cpp \
+	$(SRCS_DIR)/cmds/Kick.cpp \
+	$(SRCS_DIR)/cmds/List.cpp \
+	$(SRCS_DIR)/cmds/Mode.cpp \
+	$(SRCS_DIR)/cmds/Names.cpp \
+	$(SRCS_DIR)/cmds/Nick.cpp \
+	$(SRCS_DIR)/cmds/Notice.cpp \
+	$(SRCS_DIR)/cmds/Part.cpp \
+	$(SRCS_DIR)/cmds/Pass.cpp \
+	$(SRCS_DIR)/cmds/Ping.cpp \
+	$(SRCS_DIR)/cmds/Privmsg.cpp \
+	$(SRCS_DIR)/cmds/Quit.cpp \
+	$(SRCS_DIR)/cmds/Topic.cpp \
+	$(SRCS_DIR)/cmds/User.cpp
 OBJS = $(patsubst $(SRCS_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRCS))
 
 RM = rm -rf
